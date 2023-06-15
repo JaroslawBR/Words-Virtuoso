@@ -7,7 +7,6 @@ import kotlin.system.exitProcess
 val wordListG = mutableListOf<String>()
 val candidatesListG = mutableListOf<String>()
 
-
 class Words(args: Array<String>) {
 
     private val words = File(args[0])
@@ -87,16 +86,6 @@ class Words(args: Array<String>) {
 
     }
 
-fun main(args: Array<String>) {
-    if (args.size == 2) {
-        Words(args).checkAll()
-    } else {
-        println("Error: Wrong number of arguments.")
-        exitProcess(0)
-    }
-    println(Play().game())
-}
-
 class Play() {
 
     private fun chooseRandom(): String{
@@ -138,8 +127,6 @@ class Play() {
         return input.map { if (it in charSet) it else '_' }.joinToString("")
     }
 
-
-
     fun game() {
         val secretWord = chooseRandom()
 
@@ -158,39 +145,17 @@ class Play() {
             }
             println(showGoodLetters(secretWord, input))
 
-
-
-
-
         }
-
-
     }
-
-
-
 
 }
 
-
-
-
-/* old staff
-println("Input a 5-letter string:")
-    val input = readln()
-    when {
-        input.matches("[a-zA-Z]{5}".toRegex()) -> {
-            if (input.toSet().size == input.length) {
-                println("The input is a valid string.")
-            } else {
-                println("The input has duplicate letters.")
-            }
-        }
-        input.length != 5 -> {
-            println("The input isn't a 5-letter string.")
-        }
-        else -> {
-            println("The input has invalid characters.")
-        }
+fun main(args: Array<String>) {
+    if (args.size == 2) {
+        Words(args).checkAll()
+    } else {
+        println("Error: Wrong number of arguments.")
+        exitProcess(0)
     }
- */
+    println(Play().game())
+}
