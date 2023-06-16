@@ -86,7 +86,10 @@ class Words(args: Array<String>) {
 
     }
 
-class Play() {
+class Play {
+
+    private val wrongLetterList = mutableSetOf<Char>()
+    private val hiddenWords = mutableListOf<String>()
 
     private fun chooseRandom(): String{
         val random = Random
@@ -122,28 +125,55 @@ class Play() {
         } else 1
     }
 
-    private fun showGoodLetters(secretWord: String, input: String): String {
+    private fun showGoodLetters(secretWord: String, input: String) {
         val charSet = secretWord.toSet()
-        return input.map { if (it in charSet) it else '_' }.joinToString("")
+        println()
+        hiddenWords.add(hiddenWords(input, charSet))
+        hiddenWords.map { println(it) }
+        wrongLetterList.addAll((input.map { if (it !in charSet) it else {' '} }))
+        println()
+        println(wrongLetterList.sorted().joinToString("").uppercase().trim())
+
+    }
+
+    private fun hiddenWords(input: String, charSet: Set<Char>): String{
+        var hidde = input.map { if (it in charSet) it else {'_'} }.joinToString("")
+        for (index in charSet.indices) {
+            if (hidde[index] == '_') continue
+            if (hidde[index] == charSet.toList()[index]) hidde = hidde.replace(hidde[index], hidde[index].uppercaseChar())
+        }
+        return hidde
+
     }
 
     fun game() {
         val secretWord = chooseRandom()
-
+        var  count = 0
+        var start = System.currentTimeMillis()
         while (true) {
             println()
             println("Input a 5-letter word:")
-            val input = readln()
+            val input = readln().lowercase()
+            count ++
+            if (count == 1) start = System.currentTimeMillis()
             if (input == "exit") {
                 println("\nThe game is over.")
                 exitProcess(0)
             }
             if (checkWord(input) != 1 || listContains(input) != 1) continue
-            if (secretWord == input.lowercase()) {
+            if (secretWord == input) {
+                val end = System.currentTimeMillis()
+                val duration = end - start
+                println()
+                hiddenWords.map { println(it) }
+                println(input.uppercase())
                 println("\nCorrect!")
+                println(if (count == 1) "Amazing luck! The solution was found at once."
+                else "The solution was found after $count tries in ${duration/1000} seconds.")
+
                 exitProcess(0)
             }
-            println(showGoodLetters(secretWord, input))
+            showGoodLetters(secretWord, input)
 
         }
     }
